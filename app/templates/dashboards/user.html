@@ -1,0 +1,101 @@
+{% extends "base.html" %}
+
+{% block title %}My Dashboard - Rural Hub{% endblock %}
+
+{% block content %}
+<h2 class="mb-2">User Dashboard</h2>
+
+<div class="grid grid-2">
+    <!-- Scrap Listings -->
+    <div class="card">
+        <div class="card-body">
+            <div class="flex flex-between mb-1">
+                <h3>My Scrap Listings</h3>
+                <a href="{{ url_for('scrap.add') }}" class="btn btn-outline btn-sm">+ Add</a>
+            </div>
+            
+            {% if scrap_listings %}
+                <ul style="list-style: none; padding: 0;">
+                {% for item in scrap_listings %}
+                    <li style="padding: 0.5rem 0; border-bottom: 1px solid #E0E0E0; display: flex; justify-content: space-between;">
+                        <a href="{{ url_for('scrap.details', item_id=item.id) }}">{{ item.title }}</a>
+                        <span class="badge {% if item.status == 'active' %}badge-active{% else %}badge-closed{% endif %}">{{ item.status }}</span>
+                    </li>
+                {% endfor %}
+                </ul>
+            {% else %}
+                <p class="text-secondary">You haven't listed any scrap yet.</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Service Bookings -->
+    <div class="card">
+        <div class="card-body">
+            <h3>My Service Bookings</h3>
+            
+            {% if service_bookings %}
+                <ul style="list-style: none; padding: 0;">
+                {% for booking in service_bookings %}
+                    <li style="padding: 0.5rem 0; border-bottom: 1px solid #E0E0E0;">
+                        <div class="flex flex-between">
+                            <a href="{{ url_for('services.details', service_id=booking.service_id) }}">{{ booking.service.service_name }}</a>
+                            <span class="badge {% if booking.status == 'pending' %}badge-pending{% elif booking.status == 'accepted' %}badge-active{% else %}badge-closed{% endif %}">{{ booking.status }}</span>
+                        </div>
+                        <small class="text-secondary">Date: {{ booking.booking_date.strftime('%Y-%m-%d') }} | Provider: {{ booking.service.provider.name }}</small>
+                    </li>
+                {% endfor %}
+                </ul>
+            {% else %}
+                <p class="text-secondary">You have no service bookings.</p>
+                <a href="{{ url_for('services.index') }}" class="btn btn-outline mt-1">Find Services</a>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Barter Listings -->
+    <div class="card">
+        <div class="card-body">
+            <div class="flex flex-between mb-1">
+                <h3>My Barter Listings</h3>
+                <a href="{{ url_for('barter.add') }}" class="btn btn-outline btn-sm">+ Add</a>
+            </div>
+            
+            {% if barter_listings %}
+                <ul style="list-style: none; padding: 0;">
+                {% for item in barter_listings %}
+                    <li style="padding: 0.5rem 0; border-bottom: 1px solid #E0E0E0; display: flex; justify-content: space-between;">
+                        <a href="{{ url_for('barter.details', item_id=item.id) }}">{{ item.title }}</a>
+                        <span class="badge {% if item.status == 'active' %}badge-active{% else %}badge-closed{% endif %}">{{ item.status }}</span>
+                    </li>
+                {% endfor %}
+                </ul>
+            {% else %}
+                <p class="text-secondary">You haven't listed any barter items yet.</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Favorites -->
+    <div class="card" style="grid-column: 1 / -1;">
+        <div class="card-body">
+            <h3>My Saved Favorites</h3>
+            {% if favorite_items %}
+                <ul style="list-style: none; padding: 0;">
+                {% for item in favorite_items %}
+                    <li style="padding: 0.6rem 0; border-bottom: 1px solid #E0E0E0; display: flex; justify-content: space-between; align-items: center;">
+                        <div>
+                            <strong>{{ item.type|title }}</strong> —
+                            <a href="{{ item.url }}">{{ item.title }}</a>
+                        </div>
+                        <span class="badge badge-active">Saved</span>
+                    </li>
+                {% endfor %}
+                </ul>
+            {% else %}
+                <p class="text-secondary">You haven't saved any favorite listings yet.</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

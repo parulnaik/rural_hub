@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Rural Hub{% endblock %}</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container nav-container">
+            <a href="{{ url_for('main.index') }}" class="nav-brand">
+                Rural Hub
+            </a>
+            <div class="nav-links">
+                <a href="{{ url_for('main.map_page') }}" class="nav-link">Explore Map</a>
+                <a href="{{ url_for('scrap.index') }}" class="nav-link">Scrap</a>
+                <a href="{{ url_for('services.index') }}" class="nav-link">Services</a>
+                <a href="{{ url_for('barter.index') }}" class="nav-link">Barter</a>
+
+                {% if current_user.is_authenticated %}
+                    <a href="{{ url_for('dashboards.index') }}" class="nav-link">Dashboard</a>
+                    <a href="{{ url_for('auth.logout') }}" class="btn btn-outline">Logout</a>
+                {% else %}
+                    <a href="{{ url_for('auth.login') }}" class="nav-link">Login</a>
+                    <a href="{{ url_for('auth.register') }}" class="btn btn-primary">Sign Up</a>
+                {% endif %}
+            </div>
+        </div>
+    </nav>
+
+    <main>
+        <div class="container">
+            <div class="alert-container">
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% if messages %}
+                        {% for category, message in messages %}
+                            <div class="alert alert-{{ category }}">
+                                {{ message }}
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+                {% endwith %}
+            </div>
+
+            {% block content %}{% endblock %}
+        </div>
+    </main>
+
+    <footer>
+        <div class="container footer-content">
+            <div class="footer-brand">
+                <div class="footer-logo">🌿</div>
+                <h3>Rural Hub</h3>
+                <p>Connecting rural communities through smarter trade, trusted services, and sustainable growth.</p>
+            </div>
+
+            <div class="footer-links">
+                <h4>Explore</h4>
+                <a href="{{ url_for('main.map_page') }}">Map</a>
+                <a href="{{ url_for('scrap.index') }}">Scrap</a>
+                <a href="{{ url_for('services.index') }}">Services</a>
+                <a href="{{ url_for('barter.index') }}">Barter</a>
+            </div>
+
+            <div class="footer-links">
+                <h4>Company</h4>
+                <a href="{{ url_for('main.about') }}">About</a>
+                <a href="{{ url_for('main.mandi') }}">Mandi Prices</a>
+                <a href="{{ url_for('main.weather') }}">Weather</a>
+                <a href="{{ url_for('main.forum') }}">Forum</a>
+            </div>
+        </div>
+        <div class="container footer-bottom">
+            &copy; 2026 Rural Hub. Built for rural India.
+        </div>
+    </footer>
+
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

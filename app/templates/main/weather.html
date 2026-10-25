@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block title %}Weather Forecast - Rural Hub{% endblock %}
+
+{% block content %}
+<div style="max-width: 800px; margin: 0 auto;">
+    <div class="flex flex-between mb-2">
+        <h2 style="color: var(--primary-dark); margin: 0; display: flex; align-items: center; gap: 0.5rem;"><span>🌤️</span> Local Weather Forecast</h2>
+        <span class="text-secondary">📍 Your Location</span>
+    </div>
+    
+    <!-- Hero Weather -->
+    <div class="card mb-2" style="background: linear-gradient(rgba(2, 136, 209, 0.7), rgba(79, 195, 247, 0.7)), url('https://images.unsplash.com/photo-1561484930-998b6a7b22e8?ixlib=rb-1.2.1&auto=format&fit=crop&w=1200&q=80') center/cover; color: white; border: none; overflow: hidden; position: relative;">
+        <div class="card-body" style="display: flex; justify-content: space-between; align-items: center; padding: 3rem; position: relative; z-index: 1;">
+            <div>
+                <h3 style="color: white; margin-bottom: 0;">Today</h3>
+                <p style="font-size: 1.2rem; opacity: 0.9;">{{ forecast[0].condition }}</p>
+                <div style="font-size: 4rem; font-weight: 800; line-height: 1;">
+                    {{ forecast[0].temp_max }}°<span style="font-size: 2rem; font-weight: normal; opacity: 0.8;">C</span>
+                </div>
+            </div>
+            <div style="font-size: 8rem; line-height: 1;">
+                {{ forecast[0].icon }}
+            </div>
+        </div>
+    </div>
+    
+    <!-- 5-Day Forecast -->
+    <h3>5-Day Outlook</h3>
+    <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 1rem;">
+        {% for day in forecast[1:] %}
+        <div class="card text-center" style="transition: transform 0.2s;">
+            <div class="card-body" style="padding: 1.5rem 1rem;">
+                <h4 style="margin-bottom: 0.5rem; color: var(--text-secondary);">{{ day.day }}</h4>
+                <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">{{ day.icon }}</div>
+                <div style="font-weight: bold; font-size: 1.2rem;">{{ day.temp_max }}° <span style="color: var(--text-secondary); font-size: 1rem; font-weight: normal;">{{ day.temp_min }}°</span></div>
+                <small style="color: var(--text-secondary);">{{ day.condition }}</small>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    
+    <div class="mt-2 text-center">
+        <a href="{{ url_for('main.index') }}" class="btn btn-outline">Back to Home</a>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+
+{% block title %}Explore Rural Map{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="" />
+{% endblock %}
+
+{% block content %}
+<div class="map-shell">
+    <div class="map-header">
+        <h1>Explore local opportunities</h1>
+        <p>Discover scrap collection points, service providers, and barter deals around the region. Powered by Leaflet + OpenStreetMap.</p>
+    </div>
+
+    <div class="map-layout">
+        <div id="map" aria-label="Map showing Rural Hub listings"></div>
+
+        <aside class="map-sidebar">
+            <h3>Live listings</h3>
+            <div class="marker-list">
+                {% for marker in markers %}
+                <div class="marker-item">
+                    <span class="marker-pill">{{ marker.type }}</span>
+                    <h4>{{ marker.title }}</h4>
+                    <p>{{ marker.location }}</p>
+                    <a href="{{ marker.url }}" class="small-link">View details</a>
+                </div>
+                {% else %}
+                <div class="marker-item">
+                    <p>No listings are available in the map view yet.</p>
+                </div>
+                {% endfor %}
+            </div>
+        </aside>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
+<script>
+  const markerData = {{ markers|tojson }};
+  const map = L.map('map').setView([23.2, 77.4], 7);
+
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    maxZoom: 19,
+    attribution: '&copy; OpenStreetMap contributors'
+  }).addTo(map);
+
+  const colorMap = {
+    Scrap: '#3F8078',
+    Service: '#E6A15A',
+    Barter: '#477A91',
+    Dealer: '#183B4E',
+    'Service Provider': '#C97867'
+  };
+
+  const markers = [];
+
+  markerData.forEach((item) => {
+    const icon = L.divIcon({
+      className: 'custom-map-pin',
+      html: '<span style="background:' + (colorMap[item.type] || '#3F8078') + '"></span>',
+      iconSize: [18, 18],
+      iconAnchor: [9, 18]
+    });
+
+    const marker = L.marker([item.lat, item.lng], { icon }).addTo(map);
+    marker.bindPopup(
+      '<div class="map-popup"><strong>' + item.title + '</strong><br>' +
+      '<small>' + item.location + '</small><br>' +
+      '<a href="' + item.url + '">Open listing</a></div>'
+    );
+    markers.push(marker);
+  });
+
+  if (markers.length > 0) {
+    const bounds = L.featureGroup(markers).getBounds();
+    map.fitBounds(bounds.pad(0.35));
+  }
+</script>
+{% endblock %}

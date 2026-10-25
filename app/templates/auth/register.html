@@ -1,0 +1,253 @@
+{% extends "base.html" %}
+
+{% block title %}Register - Rural Hub{% endblock %}
+
+{% block extra_css %}
+<style>
+.auth-shell {
+    display: grid;
+    grid-template-columns: 1.05fr 0.95fr;
+    max-width: 1100px;
+    margin: 2rem auto;
+    background: var(--bg-card);
+    border-radius: 32px;
+    overflow: hidden;
+    box-shadow: var(--shadow-card);
+    border: 1px solid rgba(24, 59, 78, 0.09);
+}
+
+.auth-visual {
+    position: relative;
+    min-height: 760px;
+    background: linear-gradient(rgba(24, 59, 78, 0.58), rgba(16, 44, 58, 0.78)),
+                url('https://images.unsplash.com/photo-1592982537447-6f2a6a0d6c10?auto=format&fit=crop&w=1200&q=80') center/cover no-repeat;
+    padding: 2.4rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    color: white;
+}
+
+.auth-visual-badge {
+    align-self: flex-start;
+    background: rgba(255,255,255,0.12);
+    border: 1px solid rgba(255,255,255,0.2);
+    padding: 0.5rem 0.9rem;
+    border-radius: 999px;
+    font-size: 0.76rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.auth-visual h1 {
+    color: #fff;
+    font-size: clamp(2.3rem, 4vw, 3.5rem);
+    margin-bottom: 0.8rem;
+    line-height: 1.1;
+}
+
+.auth-visual p {
+    color: rgba(255,255,255,0.82);
+    max-width: 430px;
+    font-size: 1.08rem;
+}
+
+.auth-feature-list {
+    display: grid;
+    gap: 0.9rem;
+    margin-top: 2rem;
+}
+
+.auth-feature-item {
+    display: flex;
+    align-items: center;
+    gap: 0.9rem;
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.14);
+    border-radius: 14px;
+    padding: 0.85rem 1rem;
+    font-weight: 700;
+}
+
+.auth-form-panel {
+    padding: 2.2rem 2rem 2.4rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(180deg, #FFFEFC 0%, #EDF3F1 100%);
+}
+
+.auth-card {
+    width: 100%;
+    max-width: 460px;
+}
+
+.auth-card-header {
+    margin-bottom: 1.4rem;
+}
+
+.auth-card-header h2 {
+    font-size: 2rem;
+    margin-bottom: 0.45rem;
+}
+
+.auth-card-header p {
+    color: var(--text-muted);
+}
+
+.form-wrap {
+    background: var(--bg-card);
+    border: 1px solid #E2EAE7;
+    border-radius: 20px;
+    padding: 1.2rem;
+    box-shadow: var(--shadow-soft);
+}
+
+.submit-btn {
+    width: 100%;
+    margin-top: 0.2rem;
+}
+
+.auth-footer {
+    margin-top: 1.3rem;
+    text-align: center;
+    color: var(--text-secondary);
+}
+
+@media (max-width: 900px) {
+    .auth-shell {
+        grid-template-columns: 1fr;
+    }
+
+    .auth-visual {
+        min-height: 300px;
+    }
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="auth-shell">
+    <div class="auth-visual">
+        <div class="auth-visual-badge">Join Rural Hub</div>
+
+        <div>
+            <h1>Build your trusted rural network.</h1>
+            <p>Start trading, booking services, and connecting with local dealers and communities in a single digital marketplace.</p>
+
+            <div class="auth-feature-list">
+                <div class="auth-feature-item">♻️ Sell scrap and get competitive bids</div>
+                <div class="auth-feature-item">🚜 Offer or book local agricultural services</div>
+                <div class="auth-feature-item">🤝 Exchange goods and services directly</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="auth-form-panel">
+        <div class="auth-card">
+            <div class="auth-card-header">
+                <h2>Create Account</h2>
+                <p>Join today and grow your local network.</p>
+            </div>
+
+            <div class="form-wrap">
+                <form method="POST" action="{{ url_for('auth.register') }}">
+                    <div class="form-group">
+                        <label class="form-label" for="name">Full Name</label>
+                        <input type="text" id="name" name="name" class="form-control" placeholder="e.g. Ramesh Kumar" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="email">Email Address</label>
+                        <input type="email" id="email" name="email" class="form-control" placeholder="you@example.com" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="mobile">Mobile Number</label>
+                        <input type="text" id="mobile" name="mobile" class="form-control" placeholder="e.g. +91 9876543210" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="role">I want to register as a:</label>
+                        <select id="role" name="role" class="form-control" required>
+                            <option value="user">Regular User</option>
+                            <option value="dealer">Scrap Dealer</option>
+                            <option value="service_provider">Service Provider</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="location">Location</label>
+                        <input type="text" id="location" name="location" class="form-control" placeholder="e.g. Indore, Madhya Pradesh" required>
+                        <input type="hidden" id="latitude" name="latitude">
+                        <input type="hidden" id="longitude" name="longitude">
+                        <div style="display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; margin-top: 0.6rem; flex-wrap: wrap;">
+                            <small id="location-status" style="color: var(--text-secondary);">Use your current location to appear on the map.</small>
+                            <button type="button" id="locate-btn" class="btn btn-outline" style="padding: 0.52rem 0.9rem; font-size: 0.8rem;">Use my location</button>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="password">Password</label>
+                        <input type="password" id="password" name="password" class="form-control" placeholder="Minimum 6 characters" required minlength="6">
+                    </div>
+
+                    <button type="submit" class="btn btn-secondary submit-btn">Create Account</button>
+                </form>
+            </div>
+
+            <div class="auth-footer">
+                Already have an account? <a href="{{ url_for('auth.login') }}" style="font-weight: 700;">Login</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const roleField = document.getElementById('role');
+    const locationField = document.getElementById('location');
+    const latitudeField = document.getElementById('latitude');
+    const longitudeField = document.getElementById('longitude');
+    const locateBtn = document.getElementById('locate-btn');
+    const locationStatus = document.getElementById('location-status');
+
+    function updateLocationRequirement() {
+        const isLocationRequired = ['dealer', 'service_provider'].includes(roleField.value);
+        locationField.required = isLocationRequired;
+        locationField.placeholder = isLocationRequired
+            ? 'e.g. Indore, Madhya Pradesh'
+            : 'Optional: add your area (for service matching)';
+    }
+
+    roleField.addEventListener('change', updateLocationRequirement);
+    updateLocationRequirement();
+
+    locateBtn.addEventListener('click', function () {
+        if (!navigator.geolocation) {
+            locationStatus.textContent = 'Geolocation is not supported on this browser.';
+            return;
+        }
+
+        locateBtn.disabled = true;
+        locationStatus.textContent = 'Detecting your location...';
+
+        navigator.geolocation.getCurrentPosition(function (position) {
+            latitudeField.value = position.coords.latitude.toFixed(6);
+            longitudeField.value = position.coords.longitude.toFixed(6);
+            locationStatus.textContent = 'Location detected successfully.';
+            if (!locationField.value.trim()) {
+                locationField.value = 'Current location shared by user';
+            }
+            locateBtn.disabled = false;
+        }, function () {
+            locationStatus.textContent = 'Location access denied. You can type your area manually.';
+            locateBtn.disabled = false;
+        }, {
+            enableHighAccuracy: true,
+            timeout: 15000,
+            maximumAge: 0
+        });
+    });
+</script>
+{% endblock %}

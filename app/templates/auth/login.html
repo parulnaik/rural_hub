@@ -1,0 +1,196 @@
+{% extends "base.html" %}
+
+{% block title %}Login - Rural Hub{% endblock %}
+
+{% block extra_css %}
+<style>
+.auth-shell {
+    display: grid;
+    grid-template-columns: 1.1fr 0.9fr;
+    max-width: 1100px;
+    margin: 2rem auto;
+    background: var(--bg-card);
+    border-radius: 32px;
+    overflow: hidden;
+    box-shadow: var(--shadow-card);
+    border: 1px solid rgba(24, 59, 78, 0.09);
+}
+
+.auth-visual {
+    position: relative;
+    min-height: 680px;
+    background: linear-gradient(rgba(16, 44, 58, 0.66), rgba(24, 59, 78, 0.78)),
+                url('https://images.unsplash.com/photo-1501004318641-b39e6451bec6?auto=format&fit=crop&w=1200&q=80') center/cover no-repeat;
+    padding: 2.4rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    color: white;
+}
+
+.auth-visual-badge {
+    align-self: flex-start;
+    background: rgba(255,255,255,0.1);
+    border: 1px solid rgba(255,255,255,0.2);
+    padding: 0.5rem 0.9rem;
+    border-radius: 999px;
+    font-size: 0.76rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.auth-visual h1 {
+    color: #fff;
+    font-size: clamp(2.2rem, 4vw, 3.4rem);
+    line-height: 1.1;
+    margin-bottom: 0.8rem;
+}
+
+.auth-visual p {
+    color: rgba(255,255,255,0.82);
+    font-size: 1.08rem;
+    max-width: 420px;
+}
+
+.auth-feature-list {
+    display: grid;
+    gap: 0.9rem;
+    margin-top: 2rem;
+}
+
+.auth-feature-item {
+    display: flex;
+    align-items: center;
+    gap: 0.9rem;
+    padding: 0.85rem 1rem;
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 14px;
+    font-weight: 600;
+}
+
+.auth-form-panel {
+    padding: 2.2rem 2rem 2.4rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(180deg, #FFFEFC 0%, #EDF3F1 100%);
+}
+
+.auth-card {
+    width: 100%;
+    max-width: 430px;
+}
+
+.auth-card-header {
+    margin-bottom: 1.5rem;
+}
+
+.auth-card-header h2 {
+    font-size: 2rem;
+    margin-bottom: 0.45rem;
+}
+
+.auth-card-header p {
+    color: var(--text-muted);
+}
+
+.auth-meta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-top: 1.2rem;
+    margin-bottom: 1.2rem;
+    font-size: 0.92rem;
+    color: var(--text-secondary);
+}
+
+.auth-meta a {
+    font-weight: 700;
+}
+
+.form-wrap {
+    background: var(--bg-card);
+    border: 1px solid #E2EAE7;
+    border-radius: 20px;
+    padding: 1.2rem;
+    box-shadow: var(--shadow-soft);
+}
+
+.submit-btn {
+    width: 100%;
+    margin-top: 0.2rem;
+}
+
+.auth-footer {
+    margin-top: 1.3rem;
+    text-align: center;
+    color: var(--text-secondary);
+}
+
+@media (max-width: 900px) {
+    .auth-shell {
+        grid-template-columns: 1fr;
+    }
+
+    .auth-visual {
+        min-height: 280px;
+    }
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="auth-shell">
+    <div class="auth-visual">
+        <div class="auth-visual-badge">Rural Hub</div>
+
+        <div>
+            <h1>Welcome back to your village marketplace.</h1>
+            <p>Log in to track scrap bids, book local services, save favorite listings, and stay connected with your community.</p>
+
+            <div class="auth-feature-list">
+                <div class="auth-feature-item">✅ Trusted local listings</div>
+                <div class="auth-feature-item">📦 Scrap bidding & service booking</div>
+                <div class="auth-feature-item">🤝 Easy barter & community deals</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="auth-form-panel">
+        <div class="auth-card">
+            <div class="auth-card-header">
+                <h2>Login</h2>
+                <p>Access your dashboard and marketplace activity.</p>
+            </div>
+
+            <div class="form-wrap">
+                <form method="POST" action="{{ url_for('auth.login') }}">
+                    <div class="form-group">
+                        <label class="form-label" for="email">Email Address</label>
+                        <input type="email" id="email" name="email" class="form-control" placeholder="you@example.com" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="password">Password</label>
+                        <input type="password" id="password" name="password" class="form-control" placeholder="••••••••" required>
+                    </div>
+
+                    <div class="auth-meta">
+                        <span>Need access?</span>
+                        <a href="{{ url_for('auth.register') }}">Create account</a>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary submit-btn">Login</button>
+                </form>
+            </div>
+
+            <div class="auth-footer">
+                Don’t have an account? <a href="{{ url_for('auth.register') }}" style="font-weight: 700;">Sign up</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

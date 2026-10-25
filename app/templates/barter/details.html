@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+
+{% block title %}{{ item.title }} - Rural Hub{% endblock %}
+
+{% block content %}
+<div class="mb-1">
+    <a href="{{ url_for('barter.index') }}">&larr; Back to Barter</a>
+</div>
+
+<div class="grid" style="grid-template-columns: 2fr 1fr; gap: 2rem;">
+    <!-- Item Details -->
+    <div class="card">
+        {% if item.image_url %}
+            <img src="{{ item.image_url }}" alt="{{ item.title }}" style="width: 100%; height: auto; object-fit: cover; max-height: 400px;">
+        {% endif %}
+        <div class="card-body">
+            <div class="flex flex-between mb-1">
+                <h2>{{ item.title }}</h2>
+                <div class="flex" style="gap: 0.5rem; align-items: center;">
+                    {% if current_user.is_authenticated %}
+                        <form method="POST" action="{{ url_for('barter.toggle_favorite', item_id=item.id) }}">
+                            <button type="submit" class="btn btn-outline btn-sm">
+                                {% if is_favorite %}★ Saved{% else %}☆ Save{% endif %}
+                            </button>
+                        </form>
+                    {% endif %}
+                    <span class="badge {% if item.status == 'active' %}badge-active{% else %}badge-closed{% endif %}">
+                        {{ item.status | capitalize }}
+                    </span>
+                </div>
+            </div>
+            
+            <div style="background-color: #EAF3EF; border-left: 4px solid var(--primary-color); padding: 1rem; margin-bottom: 1.5rem;">
+                <h4 style="margin: 0; color: var(--primary-dark);">Wants in Exchange:</h4>
+                <p style="font-size: 1.2rem; margin-top: 0.5rem; font-weight: 500;">{{ item.desired_item }}</p>
+            </div>
+            
+            <p><strong>Listed By:</strong> {{ item.owner.name }}</p>
+            <p><strong>Location:</strong> {{ item.location }}</p>
+            <p><strong>Listed On:</strong> {{ item.created_at.strftime('%Y-%m-%d') }}</p>
+            
+            <h4 class="mt-1">Description</h4>
+            <p>{{ item.description }}</p>
+        </div>
+    </div>
+
+    <!-- Contact Info / Action -->
+    <div>
+        <div class="card">
+            <div class="card-body text-center">
+                <h3>Interested?</h3>
+                <p class="mb-1 text-secondary">Contact the owner directly to negotiate the exchange.</p>
+                
+                {% if current_user.is_authenticated %}
+                    {% if current_user.id != item.user_id %}
+                        <div style="padding: 1rem; background-color: var(--bg-color); border-radius: var(--border-radius); border: 1px solid #E0E0E0;">
+                            <h4>{{ item.owner.name }}</h4>
+                            <p style="font-size: 1.2rem; font-weight: bold; margin: 0.5rem 0;">📞 {{ item.owner.mobile }}</p>
+                            <p style="margin: 0;"><a href="mailto:{{ item.owner.email }}">{{ item.owner.email }}</a></p>
+                        </div>
+                    {% else %}
+                        <div class="alert alert-info">This is your listing.</div>
+                    {% endif %}
+                {% else %}
+                    <div class="alert alert-warning">
+                        Please <a href="{{ url_for('auth.login') }}">login</a> to view contact details.
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

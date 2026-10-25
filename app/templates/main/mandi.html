@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+
+{% block title %}Mandi Prices - Rural Hub{% endblock %}
+
+{% block content %}
+<div style="max-width: 900px; margin: 0 auto; background: var(--bg-card); border-radius: var(--border-radius); box-shadow: var(--box-shadow); overflow: hidden;">
+    <img src="https://images.unsplash.com/photo-1595844730298-b960fad97301?ixlib=rb-1.2.1&auto=format&fit=crop&w=1200&q=80" alt="Mandi Market" style="width: 100%; height: 250px; object-fit: cover;">
+    <div style="padding: 2rem;">
+        <div class="flex flex-between mb-2">
+        <h2 style="color: var(--primary-dark); margin: 0; display: flex; align-items: center; gap: 0.5rem;"><span>🌾</span> Latest Mandi Prices</h2>
+        <span class="badge badge-active">Live Updates</span>
+    </div>
+    
+    <p class="text-secondary mb-2">Average crop prices across major agricultural markets (Prices in ₹ per Quintal).</p>
+    
+    <div style="overflow-x: auto;">
+        <table style="width: 100%; border-collapse: collapse; min-width: 600px;">
+            <thead style="background: var(--bg-color);">
+                <tr>
+                    <th style="padding: 1rem; text-align: left; border-bottom: 2px solid var(--primary-light);">Crop</th>
+                    <th style="padding: 1rem; text-align: left; border-bottom: 2px solid var(--primary-light);">Variety</th>
+                    <th style="padding: 1rem; text-align: left; border-bottom: 2px solid var(--primary-light);">Market</th>
+                    <th style="padding: 1rem; text-align: right; border-bottom: 2px solid var(--primary-light);">Min Price</th>
+                    <th style="padding: 1rem; text-align: right; border-bottom: 2px solid var(--primary-light);">Max Price</th>
+                    <th style="padding: 1rem; text-align: right; border-bottom: 2px solid var(--primary-light);">Modal Price</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for p in prices %}
+                <tr style="border-bottom: 1px solid #DCE5E2; transition: var(--transition);" onmouseover="this.style.backgroundColor='#EAF3EF'" onmouseout="this.style.backgroundColor='transparent'">
+                    <td style="padding: 1rem; font-weight: bold; color: var(--text-primary);">{{ p.crop }}</td>
+                    <td style="padding: 1rem; color: var(--text-secondary);">{{ p.variety }}</td>
+                    <td style="padding: 1rem;">{{ p.market }}</td>
+                    <td style="padding: 1rem; text-align: right; color: var(--danger);">₹{{ p.min_price }}</td>
+                    <td style="padding: 1rem; text-align: right; color: var(--success);">₹{{ p.max_price }}</td>
+                    <td style="padding: 1rem; text-align: right; font-weight: bold; color: var(--primary-color);">₹{{ p.modal }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    
+    <div class="mt-2 text-center">
+        <a href="{{ url_for('main.index') }}" class="btn btn-outline">Back to Home</a>
+    </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block title %}About - Rural Hub{% endblock %}
+
+{% block content %}
+<div style="max-width: 800px; margin: 0 auto; background: var(--bg-card); border-radius: var(--border-radius); box-shadow: var(--box-shadow); overflow: hidden;">
+    <img src="https://images.unsplash.com/photo-1595955079148-5c4db28c6883?ixlib=rb-1.2.1&auto=format&fit=crop&w=1200&q=80" alt="Rural India" style="width: 100%; height: 300px; object-fit: cover;">
+    
+    <div style="padding: 2rem;">
+        <h1 class="text-center" style="color: var(--primary-dark);">About Rural Hub</h1>
+        <p class="text-center mb-2" style="font-size: 1.2rem; color: var(--text-secondary);">Bridging the digital divide in rural communities.</p>
+        
+        <div class="content" style="font-size: 1.1rem; line-height: 1.8;">
+            <h3 style="color: var(--secondary-dark); display: flex; align-items: center; gap: 0.5rem;"><span>🎯</span> Our Mission</h3>
+            <p class="mb-2">Rural Hub aims to empower rural populations by providing a simple, accessible digital platform tailored to their unique economic needs. We focus on sustainability, community trust, and local empowerment.</p>
+            
+            <img src="https://images.unsplash.com/photo-1589923188900-85dae523342b?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" alt="Farmers" style="width: 100%; height: 250px; object-fit: cover; border-radius: var(--border-radius); margin-bottom: 2rem;">
+            
+            <h3 style="color: var(--tertiary-color); display: flex; align-items: center; gap: 0.5rem;"><span>💡</span> Why We Built This</h3>
+            <p class="mb-2">Many rural areas lack centralized platforms for selling scrap at fair prices, finding reliable local services, or engaging in traditional barter. Rural Hub digitizes these age-old practices, making them safer, wider-reaching, and more transparent.</p>
+            
+            <h3 style="color: var(--accent-color); display: flex; align-items: center; gap: 0.5rem;"><span>👨‍💻</span> The Team</h3>
+            <p>Built as a project to demonstrate full-stack capabilities, cloud deployment on Vercel, and modern UX design tailored for accessibility and ease of use.</p>
+            
+            <div class="text-center mt-3">
+                <a href="{{ url_for('auth.register') }}" class="btn btn-primary">Join Our Community Today</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

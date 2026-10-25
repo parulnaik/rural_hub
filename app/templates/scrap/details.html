@@ -1,0 +1,139 @@
+{% extends "base.html" %}
+
+{% block title %}{{ item.title }} - Rural Hub{% endblock %}
+
+{% block content %}
+<div class="mb-1">
+    <a href="{{ url_for('scrap.index') }}">&larr; Back to Marketplace</a>
+</div>
+
+<div class="grid" style="grid-template-columns: 1fr 1fr; gap: 2rem;">
+    <!-- Left Column: Item Details -->
+    <div>
+        <div class="card">
+            {% if item.image_url %}
+                <img src="{{ item.image_url }}" alt="{{ item.title }}" style="width: 100%; height: auto; object-fit: cover; max-height: 400px;">
+            {% else %}
+                <div style="height: 300px; background: #E0E0E0; display: flex; align-items: center; justify-content: center; color: #757575;">
+                    No Image Available
+                </div>
+            {% endif %}
+            <div class="card-body">
+                <div class="flex flex-between mb-1">
+                    <h2>{{ item.title }}</h2>
+                    <div class="flex" style="gap: 0.5rem; align-items: center;">
+                        {% if current_user.is_authenticated %}
+                            <form method="POST" action="{{ url_for('scrap.toggle_favorite', item_id=item.id) }}">
+                                <button type="submit" class="btn btn-outline btn-sm">
+                                    {% if is_favorite %}★ Saved{% else %}☆ Save{% endif %}
+                                </button>
+                            </form>
+                        {% endif %}
+                        <span class="badge {% if item.status == 'active' %}badge-active{% else %}badge-closed{% endif %}">
+                            {{ item.status | capitalize }}
+                        </span>
+                    </div>
+                </div>
+                
+                <p><strong>Category:</strong> {{ item.category }}</p>
+                <p><strong>Quantity:</strong> {{ item.quantity }}</p>
+                <p><strong>Location:</strong> {{ item.location }}</p>
+                <p><strong>Listed By:</strong> {{ item.owner.name }}</p>
+                <p><strong>Listed On:</strong> {{ item.created_at.strftime('%Y-%m-%d') }}</p>
+                
+                <h4 class="mt-1">Description</h4>
+                <p>{{ item.description }}</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Right Column: Bidding Section -->
+    <div>
+        <div class="card mb-2">
+            <div class="card-body">
+                <h3>Highest Bid</h3>
+                {% if highest_bid %}
+                    <div style="font-size: 2rem; font-weight: bold; color: var(--primary-color);">
+                        ₹{{ highest_bid.bid_amount }}
+                    </div>
+                    <p style="color: var(--text-secondary);">By Dealer ID: {{ highest_bid.dealer_id }}</p>
+                {% else %}
+                    <p>No bids placed yet.</p>
+                {% endif %}
+            </div>
+        </div>
+
+        {% if current_user.is_authenticated %}
+            <!-- Dealer actions -->
+            {% if current_user.role == 'dealer' and item.status == 'active' %}
+                <div class="card mb-2">
+                    <div class="card-body">
+                        <h3>Place a Bid</h3>
+                        <form method="POST" action="{{ url_for('scrap.place_bid', item_id=item.id) }}">
+                            <div class="form-group">
+                                <label class="form-label" for="bid_amount">Bid Amount (₹)</label>
+                                <input type="number" step="0.01" min="1" id="bid_amount" name="bid_amount" class="form-control" required>
+                            </div>
+                            <button type="submit" class="btn btn-primary" style="width: 100%;">Submit Bid</button>
+                        </form>
+                    </div>
+                </div>
+            {% endif %}
+
+            <!-- Owner actions -->
+            {% if current_user.id == item.user_id and item.status == 'active' %}
+                <div class="card mb-2">
+                    <div class="card-body">
+                        <h3>Manage Listing</h3>
+                        <form method="POST" action="{{ url_for('scrap.close_listing', item_id=item.id) }}" onsubmit="return confirm('Are you sure you want to close this listing?');">
+                            {% if highest_bid %}
+                                <div class="form-group">
+                                    <label class="form-label">Select Winning Bid</label>
+                                    <select name="accepted_bid_id" class="form-control">
+                                        <option value="">Do not accept any bid (Just close)</option>
+                                        {% for bid in bids %}
+                                            <option value="{{ bid.id }}" {% if loop.first %}selected{% endif %}>
+                                                ₹{{ bid.bid_amount }} (Dealer: {{ bid.bidder.name }})
+                                            </option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            {% endif %}
+                            <button type="submit" class="btn btn-danger" style="width: 100%; background-color: var(--danger); color: white;">Close Listing</button>
+                        </form>
+                    </div>
+                </div>
+            {% endif %}
+            
+        {% else %}
+            <div class="alert alert-info">
+                Please <a href="{{ url_for('auth.login') }}">login</a> to participate in bidding.
+            </div>
+        {% endif %}
+
+        <!-- Bid History -->
+        <div class="card">
+            <div class="card-body">
+                <h3>Bid History</h3>
+                {% if bids %}
+                    <ul style="list-style: none; padding: 0;">
+                        {% for bid in bids %}
+                            <li style="padding: 0.5rem 0; border-bottom: 1px solid #E0E0E0; display: flex; justify-content: space-between;">
+                                <span>₹{{ bid.bid_amount }}</span>
+                                <span style="color: var(--text-secondary); font-size: 0.9rem;">
+                                    {{ bid.created_at.strftime('%Y-%m-%d %H:%M') }}
+                                    {% if bid.status == 'accepted' %}
+                                        <span class="badge badge-active ml-1">Accepted</span>
+                                    {% endif %}
+                                </span>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                {% else %}
+                    <p>No history available.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

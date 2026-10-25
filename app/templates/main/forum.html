@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% block title %}Community Forum - Rural Hub{% endblock %}
+
+{% block content %}
+<div style="max-width: 900px; margin: 0 auto; background: var(--bg-card); border-radius: var(--border-radius); box-shadow: var(--box-shadow); overflow: hidden;">
+    <img src="https://images.unsplash.com/photo-1529156069898-49953eb1b5ce?ixlib=rb-1.2.1&auto=format&fit=crop&w=1200&q=80" alt="Community Forum" style="width: 100%; height: 250px; object-fit: cover;">
+    <div style="padding: 2rem;">
+        <div class="flex flex-between mb-2">
+        <h2 style="color: var(--primary-dark); margin: 0; display: flex; align-items: center; gap: 0.5rem;"><span>🗣️</span> Community Forum</h2>
+        <button class="btn btn-primary" onclick="alert('Login required to post!')">+ New Discussion</button>
+    </div>
+    
+    <div class="card">
+        <div class="card-body" style="padding: 0;">
+            <ul style="list-style: none; padding: 0; margin: 0;">
+                {% for post in posts %}
+                <li style="padding: 1.5rem; border-bottom: 1px solid #E0E0E0; display: flex; justify-content: space-between; align-items: center; transition: background 0.2s;">
+                    <div>
+                        <a href="#" onclick="alert('Post details view coming soon!'); return false;" style="font-size: 1.2rem; font-weight: 600; color: var(--text-primary); text-decoration: none; display: block; margin-bottom: 0.5rem;">
+                            {{ post.title }}
+                        </a>
+                        <div style="color: var(--text-secondary); font-size: 0.9rem;">
+                            Started by <strong>{{ post.author }}</strong> • {{ post.time }}
+                        </div>
+                    </div>
+                    <div class="text-center" style="background: var(--bg-color); padding: 0.5rem 1rem; border-radius: 8px;">
+                        <span style="font-size: 1.2rem; font-weight: bold; color: var(--primary-color); display: block;">{{ post.replies }}</span>
+                        <span style="font-size: 0.8rem; color: var(--text-secondary);">Replies</span>
+                    </div>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+    
+    <div class="mt-2 text-center">
+        <a href="{{ url_for('main.index') }}" class="btn btn-outline">Back to Home</a>
+    </div>
+    </div>
+</div>
+{% endblock %}

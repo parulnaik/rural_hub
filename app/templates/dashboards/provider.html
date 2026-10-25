@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% block title %}Provider Dashboard - Rural Hub{% endblock %}
+
+{% block content %}
+<h2 class="mb-2">Service Provider Dashboard</h2>
+
+<div class="alert alert-info">
+    Welcome, <strong>{{ current_user.name }}</strong>. Manage your services and booking requests here.
+</div>
+
+<div class="grid grid-2">
+    <!-- Service Actions -->
+    <div class="card">
+        <div class="card-body text-center">
+            <h3>Expand Your Business</h3>
+            <p class="mb-1 text-secondary">List a new service to reach more customers in your area.</p>
+            <a href="{{ url_for('services.add') }}" class="btn btn-primary">+ List New Service</a>
+        </div>
+    </div>
+</div>
+
+<div class="mt-2" id="provider-data-container">
+    Loading your service data...
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    fetch("{{ url_for('dashboards.provider_data') }}")
+        .then(response => response.text())
+        .then(html => {
+            document.getElementById('provider-data-container').innerHTML = html;
+        })
+        .catch(err => {
+            document.getElementById('provider-data-container').innerHTML = '<p class="text-danger">Failed to load data.</p>';
+        });
+});
+</script>
+{% endblock %}

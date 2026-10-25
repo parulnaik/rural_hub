@@ -1,0 +1,403 @@
+{% extends "base.html" %}
+
+{% block title %}Rural Hub - Home{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="" />
+<style>
+.hero {
+    position: relative;
+    background: linear-gradient(120deg, rgba(16, 44, 58, 0.82), rgba(63, 128, 120, 0.68), rgba(230, 161, 90, 0.38)),
+                url('https://images.unsplash.com/photo-1501004318641-b39e6451bec6?auto=format&fit=crop&w=1600&q=80') center/cover no-repeat;
+    border-radius: 36px;
+    padding: 6.5rem 2rem 5rem;
+    text-align: left;
+    color: white;
+    box-shadow: 0 24px 55px rgba(24, 59, 78, 0.24);
+    overflow: hidden;
+    margin-bottom: 2rem;
+}
+
+.hero::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, rgba(16, 44, 58, 0.78), rgba(16, 44, 58, 0.18));
+}
+
+.hero > * {
+    position: relative;
+    z-index: 1;
+}
+
+.hero h1 {
+    color: #fff;
+    font-size: clamp(2.8rem, 5vw, 5rem);
+    line-height: 1.04;
+    margin-bottom: 1rem;
+    letter-spacing: -0.05em;
+    max-width: 620px;
+}
+
+.hero p {
+    max-width: 700px;
+    margin: 0 0 2rem;
+    font-size: 1.18rem;
+    color: rgba(255,255,255,0.92);
+}
+
+.hero-actions {
+    display: flex;
+    justify-content: flex-start;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.quick-options {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1rem;
+    margin: 1.5rem 0 4rem;
+    background: linear-gradient(135deg, rgba(255,254,252,0.92), rgba(232,241,238,0.96));
+    border: 1px solid rgba(24, 59, 78, 0.09);
+    backdrop-filter: blur(8px);
+    padding: 1.2rem 1.4rem;
+    border-radius: 30px;
+    box-shadow: 0 18px 46px rgba(24, 59, 78, 0.11), inset 0 1px 0 rgba(255,255,255,0.8);
+}
+
+.quick-option-item {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.7rem;
+    min-width: 180px;
+    padding: 1rem 1.5rem;
+    border-radius: 999px;
+    background: linear-gradient(135deg, rgba(255,254,252,0.98), rgba(241,246,244,0.98));
+    border: 1.5px solid rgba(63, 128, 120, 0.16);
+    color: var(--primary-dark);
+    font-weight: 800;
+    letter-spacing: 0.01em;
+    box-shadow: 0 10px 20px rgba(24, 59, 78, 0.08), inset 0 0 0 1px rgba(255,255,255,0.72);
+    transition: transform 0.28s ease, box-shadow 0.28s ease, border-color 0.28s ease;
+    overflow: hidden;
+}
+
+.quick-option-item::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(63,128,120,0.14), rgba(221,236,231,0.48), rgba(230,161,90,0.14));
+    opacity: 0;
+    transition: opacity 0.25s ease;
+}
+
+.quick-option-item:hover::before {
+    opacity: 1;
+}
+
+.quick-option-item:hover {
+    transform: translateY(-4px) scale(1.015);
+    box-shadow: 0 18px 30px rgba(24, 59, 78, 0.12);
+    border-color: rgba(63, 128, 120, 0.3);
+}
+
+.quick-option-item > * {
+    position: relative;
+    z-index: 1;
+}
+
+.features {
+    margin-bottom: 4rem;
+}
+
+.section-heading {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.section-heading h2 {
+    font-size: clamp(2rem, 3vw, 2.8rem);
+    letter-spacing: -0.04em;
+}
+
+.features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 2rem;
+}
+
+.feature-card {
+    background: var(--bg-card);
+    border-radius: 24px;
+    overflow: hidden;
+    box-shadow: var(--shadow-soft);
+    border: 1px solid rgba(24, 59, 78, 0.1);
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.feature-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 16px 28px rgba(24, 59, 78, 0.12);
+}
+
+.feature-card img {
+    width: 100%;
+    height: 220px;
+    object-fit: cover;
+}
+
+.feature-content {
+    padding: 1.7rem 1.5rem 1.8rem;
+}
+
+.feature-icon {
+    width: 64px;
+    height: 64px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--bg-soft);
+    border-radius: 18px;
+    font-size: 2rem;
+    margin-bottom: 1rem;
+}
+
+.feature-card h3 {
+    font-size: 1.5rem;
+    margin-bottom: 0.7rem;
+}
+
+.feature-card p {
+    margin-bottom: 1.2rem;
+}
+
+.mini-feature-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1.4rem;
+    margin: 2rem 0 4rem;
+}
+
+.mini-feature-box {
+    background: linear-gradient(135deg, rgba(255,254,252,0.98), rgba(235,243,240,0.96));
+    border-radius: 26px;
+    padding: 1.6rem 1.5rem;
+    border: 1px solid rgba(24, 59, 78, 0.09);
+    box-shadow: 0 18px 32px rgba(24, 59, 78, 0.08);
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.mini-feature-box:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 22px 34px rgba(24, 59, 78, 0.12);
+}
+
+.mini-feature-box .tag {
+    display: inline-flex;
+    padding: 0.45rem 0.75rem;
+    border-radius: 999px;
+    background: linear-gradient(135deg, #E4F0EC, #F0F5F2);
+    color: var(--primary-dark);
+    font-size: 0.72rem;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    box-shadow: inset 0 0 0 1px rgba(63, 128, 120, 0.16);
+}
+
+.mini-feature-box h3 {
+    margin: 0.9rem 0 0.6rem;
+    font-size: 1.35rem;
+    letter-spacing: -0.03em;
+}
+
+.mini-feature-box p {
+    color: var(--text-secondary);
+    margin: 0;
+    line-height: 1.6;
+}
+
+.info-section {
+    background: linear-gradient(135deg, #183B4E 0%, #3F8078 62%, #C97867 100%);
+    color: white;
+    padding: 4rem 2rem;
+    border-radius: 30px;
+    text-align: center;
+    box-shadow: 0 18px 30px rgba(24, 59, 78, 0.2);
+}
+
+.info-section h2 {
+    color: white;
+    font-size: clamp(2rem, 4vw, 3rem);
+    margin-bottom: 1rem;
+}
+
+.info-section p {
+    color: rgba(255,255,255,0.9);
+    max-width: 760px;
+    margin: 0 auto 1.8rem;
+    font-size: 1.08rem;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="hero">
+    <h1>Empowering Rural Communities</h1>
+    <p>A vibrant digital platform for transparent scrap bidding, local service booking, and cashless barter exchange.</p>
+    <div class="hero-actions">
+        <a href="{{ url_for('auth.register') }}" class="btn btn-primary">Join the Community</a>
+        <a href="{{ url_for('main.about') }}" class="btn btn-outline" style="color: white; border-color: white;">Learn More</a>
+    </div>
+</div>
+
+<div class="quick-options">
+    <a href="{{ url_for('main.mandi') }}" class="quick-option-item">🌾 Mandi Prices</a>
+    <a href="{{ url_for('main.weather') }}" class="quick-option-item">🌤️ Weather Forecast</a>
+    <a href="{{ url_for('services.index', location='Tractor') }}" class="quick-option-item">🚜 Tractor Rentals</a>
+    <a href="{{ url_for('scrap.add') }}" class="quick-option-item">♻️ Sell E-Waste</a>
+    <a href="{{ url_for('main.forum') }}" class="quick-option-item">🗣️ Community Forum</a>
+</div>
+
+<div class="map-shell" style="margin: 2rem 0 3rem; background: linear-gradient(135deg, rgba(255,254,252,0.96), rgba(232,241,238,0.98)); border: 1px solid rgba(24, 59, 78, 0.10); border-radius: 30px; box-shadow: 0 24px 50px rgba(24,59,78,0.10); padding: 1.25rem 0 0;">
+    <div class="map-header" style="padding: 0 2rem;">
+        <div style="display: flex; justify-content: space-between; align-items: center; gap: 1rem; flex-wrap: wrap; margin-bottom: 0.6rem;">
+            <h1 style="font-size: clamp(2rem, 3vw, 2.8rem); margin: 0;">Explore nearby opportunities</h1>
+            <a href="{{ url_for('main.map_page') }}" class="btn btn-primary">View Full Map</a>
+        </div>
+        <p style="margin-bottom: 1.2rem; color: var(--text-secondary);">Check scrap, services, and barter activity across the region on the map.</p>
+    </div>
+    <div class="map-layout" style="padding: 0 2rem 2rem; gap: 1.25rem;">
+        <div id="homeMap" aria-label="Homepage map showing local listings" style="min-height: 480px; border-radius: 24px; overflow: hidden; border: 1px solid rgba(24, 59, 78, 0.09); box-shadow: inset 0 1px 0 rgba(255,255,255,0.8);"></div>
+        <aside class="map-sidebar" style="padding: 1rem; background: rgba(255,254,252,0.84); border-radius: 22px; border: 1px solid rgba(24, 59, 78, 0.09);">
+            <h3>Live around you</h3>
+            <div class="marker-list">
+                <div class="marker-item">
+                    <span class="marker-pill">Scrap</span>
+                    <h4>Grocery waste pickup</h4>
+                    <p>Indore</p>
+                    <a href="{{ url_for('scrap.index') }}" class="small-link">View listings</a>
+                </div>
+                <div class="marker-item">
+                    <span class="marker-pill">Service</span>
+                    <h4>Tractor repair</h4>
+                    <p>Ujjain</p>
+                    <a href="{{ url_for('services.index') }}" class="small-link">Book service</a>
+                </div>
+                <div class="marker-item">
+                    <span class="marker-pill">Barter</span>
+                    <h4>Fertilizer exchange</h4>
+                    <p>Neemuch</p>
+                    <a href="{{ url_for('barter.index') }}" class="small-link">Find deals</a>
+                </div>
+            </div>
+        </aside>
+    </div>
+</div>
+
+<div class="mini-feature-row">
+    <div class="mini-feature-box">
+        <span class="tag">Trust</span>
+        <h3>Verified local deals</h3>
+        <p>Transparent pricing and real local interactions for safer trading.</p>
+    </div>
+    <div class="mini-feature-box">
+        <span class="tag">Speed</span>
+        <h3>Book in minutes</h3>
+        <p>Find services and submit listings instantly from your phone.</p>
+    </div>
+    <div class="mini-feature-box">
+        <span class="tag">Growth</span>
+        <h3>Empower villages</h3>
+        <p>Build stronger rural business networks with digital access.</p>
+    </div>
+</div>
+
+<div class="features">
+    <div class="section-heading">
+        <h2>Our Core Modules</h2>
+    </div>
+    <div class="features-grid">
+        <div class="feature-card">
+            <img src="https://images.unsplash.com/photo-1532996122724-e3c354a0b15b?auto=format&fit=crop&w=900&q=80" alt="Scrap Metal">
+            <div class="feature-content">
+                <div class="feature-icon">♻️</div>
+                <h3>Scrap Marketplace</h3>
+                <p>Connect with verified dealers for transparent, competitive bidding on agricultural and household scrap.</p>
+                <a href="{{ url_for('scrap.index') }}" class="btn btn-outline">Browse Scrap</a>
+            </div>
+        </div>
+
+        <div class="feature-card">
+            <img src="https://images.unsplash.com/photo-1589939705384-5185137a7f0f?auto=format&fit=crop&w=900&q=80" alt="Tractor Repair">
+            <div class="feature-content">
+                <div class="feature-icon" style="color: var(--info); background: #EAF1F4;">🛠️</div>
+                <h3>Local Services</h3>
+                <p>Find and book reliable local service providers, from tractor repairs to plumbing and electrical work.</p>
+                <a href="{{ url_for('services.index') }}" class="btn btn-outline" style="color: var(--info); border-color: rgba(71, 122, 145, 0.35);">Find Services</a>
+            </div>
+        </div>
+
+        <div class="feature-card">
+            <img src="https://images.unsplash.com/photo-1464226184884-fa280b87c399?auto=format&fit=crop&w=900&q=80" alt="Barter Exchange">
+            <div class="feature-content">
+                <div class="feature-icon" style="color: var(--accent-color); background: #F8EEEB;">🤝</div>
+                <h3>Barter Exchange</h3>
+                <p>Trade goods and services directly with neighbors in a cashless, community-driven marketplace.</p>
+                <a href="{{ url_for('barter.index') }}" class="btn btn-outline" style="color: var(--accent-color); border-color: rgba(201, 120, 103, 0.38);">Explore Barter</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="info-section">
+    <h2>Built for the Future of Rural India</h2>
+    <p>Experience a fully digital, accessible, and inclusive platform designed specifically to uplift the rural economy.</p>
+    <a href="{{ url_for('auth.register') }}" class="btn btn-secondary">Create a Free Account</a>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
+<script>
+  const homeMap = L.map('homeMap').setView([23.2, 77.4], 7);
+
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    maxZoom: 19,
+    attribution: '&copy; OpenStreetMap contributors'
+  }).addTo(homeMap);
+
+  const samplePoints = [
+    { title: 'Grocery waste pickup', type: 'Scrap', coords: [22.7196, 75.8577], url: '{{ url_for("scrap.index") }}' },
+    { title: 'Tractor repair', type: 'Service', coords: [23.1793, 75.7849], url: '{{ url_for("services.index") }}' },
+    { title: 'Fertilizer exchange', type: 'Barter', coords: [24.4877, 74.8687], url: '{{ url_for("barter.index") }}' }
+  ];
+
+  const colorMap = {
+    Scrap: '#3F8078',
+    Service: '#E6A15A',
+    Barter: '#477A91'
+  };
+
+  samplePoints.forEach((point) => {
+    const icon = L.divIcon({
+      className: 'custom-map-pin',
+      html: '<span style="background:' + (colorMap[point.type] || '#3F8078') + '"></span>',
+      iconSize: [18, 18],
+      iconAnchor: [9, 18]
+    });
+
+    const marker = L.marker(point.coords, { icon }).addTo(homeMap);
+    marker.bindPopup('<div class="map-popup"><strong>' + point.title + '</strong><br><a href="' + point.url + '">Open section</a></div>');
+  });
+
+  if (samplePoints.length > 0) {
+    const bounds = L.latLngBounds(samplePoints.map((point) => point.coords));
+    homeMap.fitBounds(bounds.pad(0.4));
+  }
+</script>
+{% endblock %}

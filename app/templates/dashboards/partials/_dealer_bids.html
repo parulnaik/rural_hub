@@ -1,0 +1,22 @@
+<!-- Partials for Dealer Dashboard -->
+<h3>My Bids</h3>
+
+{% if my_bids %}
+    <ul style="list-style: none; padding: 0;">
+    {% for bid in my_bids %}
+        <li style="padding: 0.5rem 0; border-bottom: 1px solid #E0E0E0;">
+            <div class="flex flex-between">
+                <a href="{{ url_for('scrap.details', item_id=bid.item_id) }}">{{ bid.scrap_item.title }}</a>
+                <span class="badge {% if bid.status == 'accepted' %}badge-active{% elif bid.status == 'pending' %}badge-pending{% else %}badge-closed{% endif %}">{{ bid.status }}</span>
+            </div>
+            <small class="text-secondary">Bid Amount: ₹{{ bid.bid_amount }} | Listed by: {{ bid.scrap_item.owner.name }}</small>
+        </li>
+    {% endfor %}
+    </ul>
+{% else %}
+    <p class="text-secondary">You haven't placed any bids yet.</p>
+{% endif %}
+
+<div class="mt-2" style="background: #EAF3EF; padding: 1rem; border-radius: var(--border-radius);">
+    <h4 style="margin: 0; color: var(--success);">Won Bids: {{ won_bids|length }}</h4>
+</div>

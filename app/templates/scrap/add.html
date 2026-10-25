@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+
+{% block title %}List Scrap - Rural Hub{% endblock %}
+
+{% block content %}
+<div style="max-width: 600px; margin: 0 auto; padding: 2rem; background: var(--bg-card); border-radius: var(--border-radius); box-shadow: var(--box-shadow);">
+    <h2 class="mb-2">List a New Scrap Item</h2>
+    
+    <form method="POST" action="{{ url_for('scrap.add') }}" enctype="multipart/form-data">
+        <div class="form-group">
+            <label class="form-label" for="title">Title</label>
+            <input type="text" id="title" name="title" class="form-control" placeholder="e.g. Old Tractor Parts" required>
+        </div>
+        
+        <div class="form-group">
+            <label class="form-label" for="category">Category</label>
+            <select id="category" name="category" class="form-control" required>
+                <option value="Metal">Metal</option>
+                <option value="Plastic">Plastic</option>
+                <option value="Electronics">Electronics/E-waste</option>
+                <option value="Agricultural">Agricultural Machinery</option>
+                <option value="Vehicle">Vehicle Parts</option>
+                <option value="Other">Other</option>
+            </select>
+        </div>
+        
+        <div class="form-group">
+            <label class="form-label" for="quantity">Quantity/Weight</label>
+            <input type="text" id="quantity" name="quantity" class="form-control" placeholder="e.g. 50 kg, 2 units" required>
+        </div>
+        
+        <div class="form-group">
+            <label class="form-label" for="location">Location (Village/District)</label>
+            <input type="text" id="location" name="location" class="form-control" required>
+        </div>
+        
+        <div class="form-group">
+            <label class="form-label" for="description">Description</label>
+            <textarea id="description" name="description" class="form-control" rows="4" required></textarea>
+        </div>
+        
+        <div class="form-group">
+            <label class="form-label" for="image">Upload Image (Max 5MB)</label>
+            <div class="upload-actions" style="display:flex; gap:0.75rem; flex-wrap:wrap; margin-top:0.5rem;">
+                <button type="button" class="btn btn-secondary" onclick="document.getElementById('image').removeAttribute('capture'); document.getElementById('image').click();">Choose File</button>
+                <button type="button" class="btn btn-outline" onclick="document.getElementById('image').setAttribute('capture', 'environment'); document.getElementById('image').click();">Open Camera</button>
+            </div>
+            <input type="file" id="image" name="image" class="form-control" accept="image/*" capture="environment" style="margin-top: 0.75rem;">
+            <small style="color: var(--text-secondary);">Supported formats: JPG, PNG, WEBP</small>
+        </div>
+        
+        <button type="submit" class="btn btn-primary" style="width: 100%;">Submit Listing</button>
+    </form>
+</div>
+{% endblock %}

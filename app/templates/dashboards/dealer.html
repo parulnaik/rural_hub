@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% block title %}Dealer Dashboard - Rural Hub{% endblock %}
+
+{% block content %}
+<h2 class="mb-2">Dealer Dashboard</h2>
+
+<div class="alert alert-info">
+    Welcome to your dashboard, <strong>{{ current_user.name }}</strong>. Here you can track your active and won bids.
+</div>
+
+<div class="grid grid-2">
+    <!-- Scrap Actions -->
+    <div class="card">
+        <div class="card-body text-center">
+            <h3>Find New Scrap</h3>
+            <p class="mb-1 text-secondary">Browse active listings and place competitive bids.</p>
+            <a href="{{ url_for('scrap.index') }}" class="btn btn-primary">Browse Marketplace</a>
+        </div>
+    </div>
+    
+    <!-- Dealer Data (Loaded Dynamically to showcase clean JS/Server rendering if needed, but we can just render here directly. Since I created a route for it, let's use an iframe or just load it directly. To be safe, I'll use simple fetch). -->
+    <div class="card">
+        <div class="card-body" id="dealer-data-container">
+            Loading your bid data...
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    fetch("{{ url_for('dashboards.dealer_data') }}")
+        .then(response => response.text())
+        .then(html => {
+            document.getElementById('dealer-data-container').innerHTML = html;
+        })
+        .catch(err => {
+            document.getElementById('dealer-data-container').innerHTML = '<p class="text-danger">Failed to load data.</p>';
+        });
+});
+</script>
+{% endblock %}

@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+
+{% block title %}Barter Marketplace - Rural Hub{% endblock %}
+
+{% block content %}
+<div class="flex flex-between mb-2">
+    <h2>Barter Marketplace</h2>
+    {% if current_user.is_authenticated and current_user.role == 'user' %}
+        <a href="{{ url_for('barter.add') }}" class="btn btn-primary">+ List Barter Item</a>
+    {% endif %}
+</div>
+
+<!-- Search Section -->
+<div class="card mb-2" style="padding: 1rem;">
+    <form method="GET" action="{{ url_for('barter.index') }}" style="display: flex; gap: 1rem; align-items: flex-end;">
+        <div style="flex: 1;">
+            <label class="form-label" for="q">Search Items</label>
+            <input type="text" id="q" name="q" class="form-control" placeholder="Search by item name or what they want in return..." value="{{ request.args.get('q', '') }}">
+        </div>
+        <button type="submit" class="btn btn-secondary">Search</button>
+        <a href="{{ url_for('barter.index') }}" class="btn btn-outline">Clear</a>
+    </form>
+</div>
+
+{% if items %}
+<div class="grid grid-3">
+    {% for item in items %}
+    <div class="card">
+        {% if item.image_url %}
+            <img src="{{ item.image_url }}" alt="{{ item.title }}" class="card-img">
+        {% else %}
+            <div style="height: 200px; background: #E0E0E0; display: flex; align-items: center; justify-content: center; color: #757575;">
+                No Image
+            </div>
+        {% endif %}
+        <div class="card-body">
+            <h3 class="card-title">{{ item.title }}</h3>
+            <p class="mb-1" style="color: var(--text-secondary);">
+                <strong>Wants:</strong> <span style="color: var(--primary-color); font-weight: bold;">{{ item.desired_item }}</span><br>
+                <strong>Location:</strong> {{ item.location }}
+            </p>
+            <a href="{{ url_for('barter.details', item_id=item.id) }}" class="btn btn-outline" style="width: 100%;">View Details</a>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+<div class="text-center mt-3" style="padding: 3rem; background: var(--bg-card); border-radius: var(--border-radius);">
+    <h3>No barter items found.</h3>
+    <p>Try clearing your search or be the first to list an item.</p>
+</div>
+{% endif %}
+{% endblock %}
